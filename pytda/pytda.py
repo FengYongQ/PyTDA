@@ -670,7 +670,11 @@ def _finalize_turb_field(radar, turbulence, name_dz, name_sw):
     if hasattr(radar.fields[name_sw]['data'], 'mask'):
         mask2 = radar.fields[name_sw]['data'].mask
     else:
-        mask2 = radar.fields[name_sw]['data'] == fill_value
+        try:
+            fill_val_sw = radar.fields[name_sw]['_FillValue']
+        except KeyError:
+            fill_val_sw = BAD_DATA_VAL
+        mask2 = radar.fields[name_sw]['data'] == fill_val_sw
     combine = np.ma.mask_or(mask1, mask2)
     return np.ma.array(turbulence, mask=combine)
 
